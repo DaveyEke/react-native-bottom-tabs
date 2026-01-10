@@ -8,6 +8,7 @@ import UIKit
 
 private final class TabBarDelegate: NSObject, UITabBarControllerDelegate {
   var onClick: ((_ index: Int) -> Bool)?
+  var items: [TabInfo] = []
 
   func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 #if os(iOS)
@@ -33,15 +34,91 @@ private final class TabBarDelegate: NSObject, UITabBarControllerDelegate {
     if let index = tabBarController.viewControllers?.firstIndex(of: viewController) {
       let defaultPrevented = onClick?(index) ?? false
 
+      if let effect = items[safe: index]?.tabIconEffect {
+        animateTabIcon(tabBar: tabBarController.tabBar, at: index, effect: effect)
+      }
+
       return !defaultPrevented
     }
 
     return false
   }
+
+  private func animateTabIcon(tabBar: UITabBar, at index: Int, effect: String?) {
+    var tabButtons: [UIView] = []
+    findTabButtons(in: tabBar, results: &tabButtons)
+
+    let sortedButtons = tabButtons.sorted { $0.frame.minX < $1.frame.minX }
+
+    // Cluster buttons that are close together (within 20pt = same tab)
+    var clusters: [[UIView]] = []
+    for button in sortedButtons {
+      if let lastCluster = clusters.last,
+         let lastButton = lastCluster.last,
+         abs(button.frame.minX - lastButton.frame.minX) < 20 {
+        clusters[clusters.count - 1].append(button)
+      } else {
+        clusters.append([button])
+      }
+    }
+
+    let uniqueButtons = clusters.compactMap { $0.first }
+
+    guard let button = uniqueButtons[safe: index],
+          let imageView = findImageView(in: button) else {
+      return
+    }
+
+    if #available(iOS 17.0, *) {
+      applySymbolEffect(to: imageView, effect: effect)
+    }
+  }
+
+  private func findTabButtons(in view: UIView, results: inout [UIView]) {
+    let typeName = String(describing: type(of: view))
+    if typeName.contains("UITabButton") {
+      results.append(view)
+      return
+    }
+    for subview in view.subviews {
+      findTabButtons(in: subview, results: &results)
+    }
+  }
+
+  private func findImageView(in view: UIView) -> UIImageView? {
+    for subview in view.subviews {
+      if let imageView = subview as? UIImageView {
+        return imageView
+      }
+      if let found = findImageView(in: subview) {
+        return found
+      }
+    }
+    return nil
+  }
+
+  @available(iOS 17.0, *)
+  private func applySymbolEffect(to imageView: UIImageView, effect: String?) {
+    switch effect {
+    case "bounce":
+      imageView.addSymbolEffect(.bounce)
+    case "scale":
+      imageView.addSymbolEffect(.scale)
+    case "wiggle":
+      if #available(iOS 18.0, *) {
+        imageView.addSymbolEffect(.wiggle)
+      } else {
+        imageView.addSymbolEffect(.bounce)
+      }
+    default:
+      imageView.addSymbolEffect(.bounce)
+    }
+  }
 }
 
 struct TabItemEventModifier: ViewModifier {
   let onTabEvent: (_ key: Int, _ isLongPress: Bool) -> Bool
+  let items: [TabInfo]
   private let delegate = TabBarDelegate()
 
   func body(content: Content) -> some View {
@@ -55,6 +132,7 @@ struct TabItemEventModifier: ViewModifier {
     delegate.onClick = { index in
       onTabEvent(index, false)
     }
+    delegate.items = items
     tabController.delegate = delegate
 
     // Don't register gesutre recognizer more than one time
@@ -122,8 +200,8 @@ extension View {
   /**
    Event for tab items. Returns true if should prevent default (switching tabs).
    */
-  func onTabItemEvent(_ handler: @escaping (Int, Bool) -> Bool) -> some View {
-    modifier(TabItemEventModifier(onTabEvent: handler))
+  func onTabItemEvent(items: [TabInfo] = [], _ handler: @escaping (Int, Bool) -> Bool) -> some View {
+    modifier(TabItemEventModifier(onTabEvent: handler, items: items))
   }
 }
 

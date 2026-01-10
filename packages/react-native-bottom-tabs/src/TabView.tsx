@@ -22,7 +22,13 @@ import { BottomTabBarHeightContext } from './utils/BottomTabBarHeightContext';
 import type { ImageSource } from 'react-native/Libraries/Image/ImageSource';
 import NativeTabView from './TabViewNativeComponent';
 import useLatestCallback from 'use-latest-callback';
-import type { AppleIcon, BaseRoute, NavigationState, TabRole } from './types';
+import type {
+  AppleIcon,
+  BaseRoute,
+  NavigationState,
+  TabIconEffect,
+  TabRole,
+} from './types';
 import DelayedFreeze from './DelayedFreeze';
 import {
   BottomAccessoryView,
@@ -148,6 +154,11 @@ interface Props<Route extends BaseRoute> {
   getRole?: (props: { route: Route }) => TabRole | undefined;
 
   /**
+   * Get icon effect for the tab, uses `route.tabIconEffect` by default. (iOS 17+ only)
+   */
+  getTabIconEffect?: (props: { route: Route }) => TabIconEffect | undefined;
+
+  /**
    * Custom tab bar to render. Set to `null` to hide the tab bar completely.
    */
   tabBar?: () => React.ReactNode;
@@ -229,6 +240,7 @@ const TabView = <Route extends BaseRoute>({
   getActiveTintColor = ({ route }: { route: Route }) => route.activeTintColor,
   getTestID = ({ route }: { route: Route }) => route.testID,
   getRole = ({ route }: { route: Route }) => route.role,
+  getTabIconEffect = ({ route }: { route: Route }) => route.tabIconEffect,
   getSceneStyle = ({ route }: { route: Route }) => route.style,
   getPreventsDefault = ({ route }: { route: Route }) => route.preventsDefault,
   hapticFeedbackEnabled = false,
@@ -309,6 +321,7 @@ const TabView = <Route extends BaseRoute>({
           testID: getTestID?.({ route }),
           role: getRole?.({ route }),
           preventsDefault: getPreventsDefault?.({ route }),
+          tabIconEffect: getTabIconEffect?.({ route }),
         };
       }),
     [
@@ -323,6 +336,7 @@ const TabView = <Route extends BaseRoute>({
       getTestID,
       getRole,
       getPreventsDefault,
+      getTabIconEffect,
     ]
   );
 

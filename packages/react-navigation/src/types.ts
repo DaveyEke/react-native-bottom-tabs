@@ -9,7 +9,7 @@ import type {
 } from '@react-navigation/native';
 import type { ImageSourcePropType, StyleProp, ViewStyle } from 'react-native';
 import type TabView from 'react-native-bottom-tabs';
-import type { AppleIcon, TabRole } from 'react-native-bottom-tabs';
+import type { AppleIcon, TabIconEffect, TabRole } from 'react-native-bottom-tabs';
 
 export type NativeBottomTabNavigationEventMap = {
   /**
@@ -120,6 +120,11 @@ export type NativeBottomTabNavigationOptions = {
    * Whether to prevent default action of the tab. Defaults to `false`.
    */
   preventsDefault?: boolean;
+  /**
+   * Animation effect to apply to tab icon when tapped. iOS 17+ only.
+   * Options: 'bounce', 'scale', 'wiggle' (iOS 18+).
+   */
+  tabIconEffect?: TabIconEffect;
 };
 
 export type NativeBottomTabDescriptor = Descriptor<
@@ -158,6 +163,7 @@ export type NativeBottomTabNavigationConfig = Partial<
     | 'getActiveTintColor'
     | 'getTestID'
     | 'getRole'
+    | 'getTabIconEffect'
     | 'tabBar'
     | 'getFreezeOnBlur'
     | 'getSceneStyle'

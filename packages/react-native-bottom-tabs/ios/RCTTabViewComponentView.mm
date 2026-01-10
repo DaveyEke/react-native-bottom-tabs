@@ -40,7 +40,8 @@ bool operator==(const RNCTabViewItemsStruct& lhs, const RNCTabViewItemsStruct& r
   lhs.hidden == rhs.hidden &&
   lhs.testID == rhs.testID &&
   lhs.role == rhs.role &&
-  lhs.preventsDefault == rhs.preventsDefault;
+  lhs.preventsDefault == rhs.preventsDefault &&
+  lhs.tabIconEffect == rhs.tabIconEffect;
 }
 
 bool operator!=(const RNCTabViewItemsStruct& lhs, const RNCTabViewItemsStruct& rhs) {
@@ -176,7 +177,6 @@ using namespace facebook::react;
     _tabViewProvider.tabBarHidden = newViewProps.tabBarHidden;
   }
 
-
   [super updateProps:props oldProps:oldProps];
 }
 
@@ -193,6 +193,7 @@ NSArray* convertItemsToArray(const std::vector<RNCTabViewItemsStruct>& items) {
                                          testID:RCTNSStringFromStringNilIfEmpty(item.testID)
                                          role:RCTNSStringFromStringNilIfEmpty(item.role)
                               preventsDefault:item.preventsDefault
+                              tabIconEffect:RCTNSStringFromStringNilIfEmpty(item.tabIconEffect)
     ];
 
     [result addObject:tabInfo];

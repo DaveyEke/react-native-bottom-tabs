@@ -34,6 +34,7 @@ export default function SFSymbols() {
         ? require('../../assets/icons/grid_dark.png')
         : { sfSymbol: 'square.grid.3x2.fill' },
       badge: '5',
+      tabIconEffect: 'wiggle',
     },
     {
       key: 'contacts',
@@ -42,6 +43,7 @@ export default function SFSymbols() {
         : { sfSymbol: 'person.fill' },
       title: 'Contacts',
       role: 'search',
+      tabIconEffect: 'scale',
     },
   ]);
 

@@ -223,6 +223,7 @@ Each route in the `routes` array can have the following properties:
 - `role`: A value that defines the purpose of the tab
 - `style`: Style object for the component wrapping the screen content
 - `preventsDefault`: Whether to prevent default tab switching behavior when pressed
+- `tabIconEffect`: <Badge text="iOS 17+" type="info" /> Animation effect to apply to tab icon when tapped. Options: `'bounce'`, `'scale'`, `'wiggle'` (iOS 18+)
 
 ### Helper Props
 

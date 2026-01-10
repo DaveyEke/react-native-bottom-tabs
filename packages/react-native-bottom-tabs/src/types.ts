@@ -7,6 +7,8 @@ export type AppleIcon = { sfSymbol: SFSymbol };
 
 export type TabRole = 'search';
 
+export type TabIconEffect = 'bounce' | 'scale' | 'wiggle';
+
 export type BaseRoute = {
   key: string;
   title?: string;
@@ -23,6 +25,7 @@ export type BaseRoute = {
   freezeOnBlur?: boolean;
   style?: StyleProp<ViewStyle>;
   preventsDefault?: boolean;
+  tabIconEffect?: TabIconEffect;
 };
 
 export type NavigationState<Route extends BaseRoute> = {

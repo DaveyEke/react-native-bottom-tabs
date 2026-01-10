@@ -46,7 +46,7 @@ struct TabViewImpl: View {
     tabContent
       .tabBarMinimizeBehavior(props.minimizeBehavior)
       #if !os(tvOS) && !os(macOS) && !os(visionOS)
-        .onTabItemEvent { index, isLongPress in
+        .onTabItemEvent(items: props.items) { index, isLongPress in
           let item = props.filteredItems[safe: index]
           guard let key = item?.key else { return false }
 
