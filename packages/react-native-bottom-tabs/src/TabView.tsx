@@ -22,7 +22,13 @@ import { BottomTabBarHeightContext } from './utils/BottomTabBarHeightContext';
 import type { ImageSource } from 'react-native/Libraries/Image/ImageSource';
 import NativeTabView from './TabViewNativeComponent';
 import useLatestCallback from 'use-latest-callback';
-import type { AppleIcon, BaseRoute, NavigationState, TabRole } from './types';
+import type {
+  AppleIcon,
+  BaseRoute,
+  LayoutDirection,
+  NavigationState,
+  TabRole,
+} from './types';
 import DelayedFreeze from './DelayedFreeze';
 import {
   BottomAccessoryView,
@@ -201,6 +207,11 @@ interface Props<Route extends BaseRoute> {
    * @platform ios
    */
   renderBottomAccessoryView?: BottomAccessoryViewProps['renderBottomAccessoryView'];
+  /**
+   * The direction of the layout.
+   * @default 'locale'
+   */
+  layoutDirection?: LayoutDirection;
 }
 
 const ANDROID_MAX_TABS = 100;
@@ -239,6 +250,7 @@ const TabView = <Route extends BaseRoute>({
   tabBarStyle,
   tabLabelStyle,
   renderBottomAccessoryView,
+  layoutDirection = 'locale',
   ...props
 }: Props<Route>) => {
   // @ts-ignore
@@ -398,6 +410,7 @@ const TabView = <Route extends BaseRoute>({
         onTabBarMeasured={handleTabBarMeasured}
         onNativeLayout={handleNativeLayout}
         hapticFeedbackEnabled={hapticFeedbackEnabled}
+        layoutDirection={layoutDirection}
         activeTintColor={activeTintColor}
         inactiveTintColor={inactiveTintColor}
         barTintColor={tabBarStyle?.backgroundColor}

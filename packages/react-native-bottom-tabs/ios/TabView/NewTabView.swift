@@ -9,6 +9,16 @@ struct NewTabView: AnyTabView {
   var onSelect: (String) -> Void
   var updateTabBarAppearance: () -> Void
 
+  private var effectiveLayoutDirection: LayoutDirection {
+    let dir = props.layoutDirection ?? "locale"
+    if let mapped = ["rtl": LayoutDirection.rightToLeft,
+                     "ltr": LayoutDirection.leftToRight][dir] {
+      return mapped
+    }
+    let system = UIView.userInterfaceLayoutDirection(for: .unspecified)
+    return system == .rightToLeft ? .rightToLeft : .leftToRight
+  }
+
   @ViewBuilder
   var body: some View {
     TabView(selection: $props.selectedPage) {
@@ -49,6 +59,7 @@ struct NewTabView: AnyTabView {
         }
       }
     }
+    .environment(\.layoutDirection, effectiveLayoutDirection)
     .measureView { size in
       onLayout(size)
     }

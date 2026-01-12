@@ -95,6 +95,11 @@ public final class TabInfo: NSObject {
     }
   }
 
+  @objc public var layoutDirection: NSString? {
+    didSet {
+      props.layoutDirection = layoutDirection as? String
+    }
+  }
   @objc public var scrollEdgeAppearance: NSString? {
     didSet {
       props.scrollEdgeAppearance = scrollEdgeAppearance as? String
